@@ -1,7 +1,7 @@
 import { expect, test } from '@oclif/test';
 import fs from 'fs';
 import path from 'path';
-import { fileCleanup } from '../../helpers';
+import { closeStudioServerSimple, fileCleanup, tryPuppetter } from '../../helpers';
 
 const spec = fs.readFileSync('./test/integration/bundle/final-asyncapi.yaml', {encoding: 'utf-8'});
 
@@ -9,6 +9,20 @@ function validateGeneratedSpec(filePath: string, spec: string) {
   const generatedSPec = fs.readFileSync(path.resolve(filePath), { encoding: 'utf-8' });
   return generatedSPec === spec;
 }
+
+describe('studio opened', () => {
+  test
+    .stdout()
+    .command([
+      'start studio', './test/fixtures/specification-v3.yml',
+    ])
+    .it('should successfully open and navigate the site', async () => {
+      const {logoTitle,sideBarId} = await tryPuppetter();
+      expect(logoTitle).to.equal('AsyncAPI Logo');
+      expect(sideBarId).to.equal('sidebarr');
+      // await closeStudioServerSimple();
+    });
+});
 
 describe('bundle', () => {
   describe('bundle successful', () => {
