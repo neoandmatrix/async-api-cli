@@ -117,7 +117,7 @@ export function start(filePath: string, port: number = DEFAULT_PORT): void {
           console.log('🔴 Server stopped');
           console.log(process.exitCode);
           // eslint-disable-next-line no-process-exit
-          process.exit(0);
+          process.exit();
         });
     
         return;
