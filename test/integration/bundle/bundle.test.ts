@@ -19,7 +19,7 @@ describe('studio opened', () => {
     .it('should successfully open and navigate the site', async () => {
       const {logoTitle,sideBarId} = await tryPuppetter();
       expect(logoTitle).to.equal('AsyncAPI Logo');
-      expect(sideBarId).to.equal('sidebarr');
+      expect(sideBarId).to.equal('sidebar');
       // await closeStudioServerSimple();
     });
 });
