@@ -4,7 +4,7 @@ import bundle from '@asyncapi/bundler';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import open from 'open';
+// import open from 'open';
 import next from 'next';
 import path from 'path';
 import yaml from 'js-yaml';
@@ -157,7 +157,7 @@ export function startPreview(filePath:string,base:string | undefined,baseDirecto
           );
         }
         if (!bundleError) {
-          open(url);
+          //open(url);
         }
       }).on('error', (error) => {
         console.error(`Failed to start server on port ${port}:`, error.message);

@@ -3,7 +3,7 @@ import { SpecificationFileNotFound } from '../errors/specification-file';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import open from 'open';
+// import open from 'open';
 import next from 'next';
 import path from 'path';
 import { version as studioVersion } from '@asyncapi/studio/package.json';
@@ -101,7 +101,29 @@ export function start(filePath: string, port: number = DEFAULT_PORT): void {
       });
     }
 
-    const server = createServer((req, res) => handle(req, res));
+    const server = createServer((req, res) => {
+      if (req.url === '/close') {
+        console.log('🛑 Shutdown request received via /close endpoint');
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Server shutting down...');
+    
+        // Gracefully close WebSocket connections
+        for (const socket of wsServer.clients) {
+          socket.close();
+        }
+    
+        // Close the server
+        server.close(() => {
+          console.log('🔴 Server stopped');
+          console.log(process.exitCode);
+          // eslint-disable-next-line no-process-exit
+          process.exit(0);
+        });
+    
+        return;
+      }
+      handle(req, res);
+    });
 
     server.on('upgrade', (request, socket, head) => {
       if (request.url === '/live-server') {
@@ -126,7 +148,7 @@ export function start(filePath: string, port: number = DEFAULT_PORT): void {
           'Warning: No file was provided, and we couldn\'t find a default file (like "asyncapi.yaml" or "asyncapi.json") in the current folder. Starting Studio with a blank workspace.'
         );
       }
-      open(url);
+      //open(url);
     });
   });
 }
