@@ -158,7 +158,7 @@
     "pretest:coverage": "npm run build",
     "posttest": "rimraf ./test.asyncapi-cli",
     "postinstall": "node ./scripts/enableAutoComplete.js",
-    "test": "npm run test:unit && npm run action:test",
+    "test": "npm run action:test && npm run test:unit",
     "test:unit": "cross-env NODE_ENV=development TEST=1 CUSTOM_CONTEXT_FILENAME=\"test.asyncapi-cli\" CUSTOM_CONTEXT_FILE_LOCATION=\"\" nyc --extension .ts mocha --require ts-node/register --require test/helpers/init.js --reporter spec --timeout 100000 \"test/**/*.test.ts\"",
     "test:one": "cross-env NODE_ENV=development TEST=1 CUSTOM_CONTEXT_FILENAME=\"test.asyncapi-cli\" CUSTOM_CONTEXT_FILE_LOCATION=\"\" nyc --extension .ts mocha --require ts-node/register --require test/helpers/init.js --reporter spec --timeout 100000",
     "get-version": "echo $npm_package_version",
