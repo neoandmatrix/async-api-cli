@@ -9,6 +9,10 @@ import { expect } from '@oclif/test';
 const testHelper = new TestHelper();
 
 describe('validate', () => {
+  after(async () => {
+    await closeStudioServerSimple();
+  });
+
   describe('with file paths', () => {
     beforeEach(() => {
       testHelper.createDummyContextFile();
@@ -22,8 +26,7 @@ describe('validate', () => {
       createMockServer();
     });
 
-    after(async () => {
-      await closeStudioServerSimple();
+    after(() => {
       stopMockServer();
     });
 
