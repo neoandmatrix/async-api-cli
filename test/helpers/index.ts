@@ -79,7 +79,9 @@ export function fileCleanup(filepath: string) {
 }
 
 export async function tryPuppetter(){
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox']
+  });
   const page = await browser.newPage();
 
   await page.goto('http://localhost:3210?liveServer=3210&studio-version=0.24.2');
