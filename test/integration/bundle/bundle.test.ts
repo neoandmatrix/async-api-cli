@@ -19,7 +19,7 @@ describe('studio opened', () => {
     .it('should successfully open and navigate the site', async () => {
       const {logoTitle,sideBarId} = await tryPuppetter();
       expect(logoTitle).to.equal('AsyncAPI Logo');
-      expect(sideBarId).to.equal('sidebarrr');
+      expect(sideBarId).to.equal('sidebar');
       // await closeStudioServerSimple();
     });
 });
@@ -34,7 +34,7 @@ describe('bundle', () => {
       ])
       .it('should successfully bundle specification', (ctx, done) => {
         expect(ctx.stdout).to.contain(
-          'Check out your shiny new bundleddddd files at ./test/integration/bundle/final.yaml'
+          'Check out your shiny new bundled files at ./test/integration/bundle/final.yaml'
         );
         fileCleanup('./test/integration/bundle/final.yaml');
         done();
