@@ -48,7 +48,11 @@ function isStudioInstalledInDataDir(dataDir: string): boolean {
   return existsSync(path.join(dataDirStudioPath(dataDir), 'package.json'));
 }
 
-function installStudio(dataDir: string, versionSpec: string): void {
+function isExecutableNotFound(error?: Error): boolean {
+  return (error as NodeJS.ErrnoException | undefined)?.code === 'ENOENT';
+}
+
+export function installStudio(dataDir: string, versionSpec: string): void {
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
   const s = spinner();
   s.start(`Installing ${STUDIO_PKG}@${versionSpec} (${STUDIO_DOWNLOAD_SIZE})`);
@@ -68,10 +72,17 @@ function installStudio(dataDir: string, versionSpec: string): void {
     { stdio: ['ignore', 'ignore', 'inherit'] },
   );
 
+  if (isExecutableNotFound(result.error)) {
+    s.stop('Studio installation could not start.');
+    throw new StudioInstallError(
+      'npm was not found on PATH. Standalone AsyncAPI CLI installers do not bundle npm, but npm is required to download Studio on-demand. Install Node.js and npm from https://nodejs.org/, then run "asyncapi studio install --yes" again. You can continue using all non-Studio CLI commands without npm.',
+    );
+  }
+
   if (result.status !== 0) {
     s.stop('Studio installation failed.');
     throw new StudioInstallError(
-      `Failed to install ${STUDIO_PKG}@${versionSpec}. Please check your network connection and npm setup, or install the CLI with Studio bundled via "npm install -g @asyncapi/cli".`,
+      `Failed to install ${STUDIO_PKG}@${versionSpec}. Check your network connection and npm configuration, then retry with "asyncapi studio install --yes".`,
     );
   }
 

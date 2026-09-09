@@ -1,4 +1,5 @@
 import { Flags } from '@oclif/core';
+import { studioInstallFlag } from '@cli/internal/flags/studio.flags';
 
 export const fileFlags = (exampleFlagDescription: string) => {
   return {
@@ -6,10 +7,7 @@ export const fileFlags = (exampleFlagDescription: string) => {
     'file-name': Flags.string({ char: 'n', description: 'name of the file' }),
     example: Flags.string({ char: 'e', description: exampleFlagDescription }),
     studio: Flags.boolean({ char: 's', description: 'open in Studio' }),
-    yes: Flags.boolean({
-      char: 'y',
-      description: 'automatically install Studio on-demand (~450MB) without prompting when opening in Studio. Can also be set via ASYNCAPI_STUDIO_AUTO_INSTALL=1.',
-    }),
+    yes: studioInstallFlag(),
     port: Flags.integer({
       char: 'p',
       description: 'port in which to start Studio',

@@ -3,6 +3,7 @@ import type { Config } from '@oclif/core';
 import {
   decideStudioInstall,
   getStudioVersionSpec,
+  installStudio,
 } from '../../../src/domains/models/studio-installer';
 
 describe('studio-installer - getStudioVersionSpec', () => {
@@ -23,6 +24,21 @@ describe('studio-installer - getStudioVersionSpec', () => {
   it('falls back to "latest" when Studio is not declared', () => {
     const config = { pjson: {} } as unknown as Config;
     expect(getStudioVersionSpec(config)).to.equal('latest');
+  });
+});
+
+describe('studio-installer - installStudio', () => {
+  it('explains how standalone users can install npm when it is unavailable', () => {
+    const originalPath = process.env.PATH;
+    process.env.PATH = '';
+
+    try {
+      expect(() => installStudio('/tmp/asyncapi-studio-test', '^1.2.0')).to.throw(
+        'Standalone AsyncAPI CLI installers do not bundle npm',
+      );
+    } finally {
+      process.env.PATH = originalPath;
+    }
   });
 });
 

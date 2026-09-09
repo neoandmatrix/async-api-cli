@@ -27,7 +27,10 @@ npm install -g @asyncapi/cli
 ```
 
 > [!NOTE]
-> AsyncAPI Studio is not bundled with the CLI to keep the install small. The first time you run `asyncapi start studio`, `asyncapi start preview`, or `asyncapi new --studio`, the CLI will ask to download Studio (~450MB) into its data directory. In non-interactive environments (like CI), pass `--yes` (or set `ASYNCAPI_STUDIO_AUTO_INSTALL=1`) to install it automatically.
+> AsyncAPI Studio is not bundled with the CLI to keep the install small. The first time you run `asyncapi start studio`, `asyncapi start preview`, or `asyncapi new --studio`, the CLI will ask to download Studio (~450MB) into its data directory. To download it ahead of time, run `asyncapi studio install` (or `asyncapi studio install --yes` without a prompt). In non-interactive environments (like CI), pass `--yes` or set `ASYNCAPI_STUDIO_AUTO_INSTALL=1`.
+
+> [!IMPORTANT]
+> Standalone `.exe`, `.pkg`, `.deb`, and archive installations do not bundle npm. All non-Studio CLI commands work without npm, but installing Studio on-demand requires npm on `PATH`. If the CLI reports that npm is unavailable, install Node.js and npm from [nodejs.org](https://nodejs.org/) and rerun `asyncapi studio install --yes`.
 To enable the autocomplete feature in the CLI for the shells **bash and zshrc**, there is a script that will run automatically and autocomplete is only support for **bash and zshrc** for the **powershell** refer to manually enabling  [autocomplete](https://www.asyncapi.com/docs/tools/cli/autocompleteEnabled) guide in ClI:
 
 After the ClI installation :
