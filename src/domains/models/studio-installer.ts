@@ -52,8 +52,39 @@ function isExecutableNotFound(error?: Error): boolean {
   return (error as NodeJS.ErrnoException | undefined)?.code === 'ENOENT';
 }
 
+function resolveNpmExecutable(): string | undefined {
+  const executableNames =
+    process.platform === 'win32' ? ['npm.cmd', 'npm.exe', 'npm'] : ['npm'];
+
+  for (const directory of (process.env.PATH ?? '').split(path.delimiter)) {
+    const normalizedDirectory = directory.replace(/^"|"$/g, '');
+    if (!normalizedDirectory) {
+      continue;
+    }
+
+    for (const executableName of executableNames) {
+      const executablePath = path.join(normalizedDirectory, executableName);
+      if (existsSync(executablePath)) {
+        return executablePath;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function npmUnavailableError(): StudioInstallError {
+  return new StudioInstallError(
+    'npm was not found on PATH. Standalone AsyncAPI CLI installers do not bundle npm, but npm is required to download Studio on-demand. Install Node.js and npm from https://nodejs.org/, then run "asyncapi studio install --yes" again. You can continue using all non-Studio CLI commands without npm.',
+  );
+}
+
 export function installStudio(dataDir: string, versionSpec: string): void {
-  const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const npm = resolveNpmExecutable();
+  if (!npm) {
+    throw npmUnavailableError();
+  }
+
   const s = spinner();
   s.start(`Installing ${STUDIO_PKG}@${versionSpec} (${STUDIO_DOWNLOAD_SIZE})`);
 
@@ -69,14 +100,15 @@ export function installStudio(dataDir: string, versionSpec: string): void {
       '--loglevel',
       'error',
     ],
-    { stdio: ['ignore', 'ignore', 'inherit'] },
+    {
+      stdio: ['ignore', 'ignore', 'inherit'],
+      shell: process.platform === 'win32',
+    },
   );
 
   if (isExecutableNotFound(result.error)) {
     s.stop('Studio installation could not start.');
-    throw new StudioInstallError(
-      'npm was not found on PATH. Standalone AsyncAPI CLI installers do not bundle npm, but npm is required to download Studio on-demand. Install Node.js and npm from https://nodejs.org/, then run "asyncapi studio install --yes" again. You can continue using all non-Studio CLI commands without npm.',
-    );
+    throw npmUnavailableError();
   }
 
   if (result.status !== 0) {
