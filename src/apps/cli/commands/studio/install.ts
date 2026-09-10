@@ -5,10 +5,10 @@ import { Flags } from '@oclif/core';
 import { blueBright } from 'picocolors';
 
 export default class InstallStudio extends Command {
-  static description =
+  static readonly description =
     'Install the optional AsyncAPI Studio package (~450MB) before first use';
 
-  static flags = {
+  static readonly flags = {
     help: Flags.help({ char: 'h' }),
     yes: studioInstallFlag(),
   };
